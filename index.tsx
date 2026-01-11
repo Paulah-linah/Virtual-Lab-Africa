@@ -183,6 +183,8 @@ const AVATARS = [
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Milo"
 ];
 
+const STUDENT_IMG = new URL('./Student.png', import.meta.url).href;
+
 // --- Apparatus Components ---
 
 const RealisticBunsenBurner = ({ airHoleLevel, isLit }: { airHoleLevel: number, isLit: boolean }) => {
@@ -835,15 +837,15 @@ const AboutSection = () => {
                   <div className="absolute -inset-4 bg-white/10 rounded-[3rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white/20 relative">
                     <img 
-                      src="Student.png" 
+                      src={STUDENT_IMG} 
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                       alt="Evans Ebukoro Odera" 
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#122b31]/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-8 left-8 text-white">
-                      <p className="font-black text-2xl">Evans Ebukoro Odera</p>
-                      <p className="text-sm uppercase font-bold tracking-widest text-white/70">Aspiring Medical Doctor</p>
-                    </div>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#122b31]/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-8 left-8 text-white">
+                    <p className="font-black text-2xl">Evans Ebukoro Odera</p>
+                    <p className="text-sm uppercase font-bold tracking-widest text-white/70">Aspiring Medical Doctor</p>
                   </div>
                 </div>
               </div>
