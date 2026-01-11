@@ -1,0 +1,7 @@
+{
+  "name": "VirtuLab Africa",
+  "description": "A virtual laboratory platform for the Kenyan CBC system, featuring AI assistance, gamified learning, and teacher analytics.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
