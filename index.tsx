@@ -188,35 +188,135 @@ const STUDENT_IMG = new URL('./Student.png', import.meta.url).href;
 // --- Apparatus Components ---
 
 const RealisticBunsenBurner = ({ airHoleLevel, isLit }: { airHoleLevel: number, isLit: boolean }) => {
-  const flameColors = [
-    'from-orange-400 via-orange-500 to-orange-600 shadow-[0_0_40px_rgba(249,115,22,0.6)]',
-    'from-orange-300 via-yellow-400 to-orange-500 shadow-[0_0_45px_rgba(250,204,21,0.5)]',
-    'from-blue-300 via-blue-400 to-blue-500 shadow-[0_0_50px_rgba(59,130,246,0.6)]',
-    'from-blue-400 via-cyan-400 to-blue-600 shadow-[0_0_60px_rgba(34,211,238,0.7)]'
-  ];
-
-  const flameScale = [0.8, 0.9, 1.1, 1.3][airHoleLevel];
-
   return (
-    <div className="relative flex flex-col items-center select-none pt-20 transition-transform duration-500 scale-[var(--apparatus-scale)]">
-      {isLit && (
-        <div 
-          className={`absolute -top-12 w-12 h-32 bg-gradient-to-t rounded-full blur-[1px] animate-pulse transition-all duration-500 origin-bottom ${flameColors[airHoleLevel]}`}
-          style={{ transform: `scale(${flameScale})` }}
-        >
-          <div className="absolute inset-0 bg-white/20 rounded-full blur-md" />
-        </div>
-      )}
-      <div className="w-10 h-48 bg-gradient-to-r from-slate-400 via-slate-300 to-slate-400 rounded-t-lg relative border-x border-slate-500/30">
-        <div 
-          className="absolute bottom-12 w-full h-8 bg-slate-600 border-y border-slate-700 transition-all duration-300 flex items-center justify-center"
-          style={{ transform: `rotate(${airHoleLevel * 90}deg)` }}
-        >
-          <div className="w-4 h-4 rounded-full bg-slate-900 border border-slate-500" />
-        </div>
+    <div className="relative flex flex-col items-center select-none pt-16 transition-transform duration-500 scale-[var(--apparatus-scale)]">
+      <div className="relative">
+        {isLit && (
+          <svg
+            width="180"
+            height="210"
+            viewBox="0 0 180 210"
+            className="absolute -top-36 left-1/2 -translate-x-1/2 pointer-events-none"
+          >
+            <defs>
+              <radialGradient id="flameGlow" cx="50%" cy="60%" r="60%">
+                <stop offset="0%" stopColor={airHoleLevel >= 2 ? '#67E8F9' : '#FDE68A'} stopOpacity="0.65" />
+                <stop offset="55%" stopColor={airHoleLevel >= 2 ? '#3B82F6' : '#F59E0B'} stopOpacity="0.22" />
+                <stop offset="100%" stopColor="#000" stopOpacity="0" />
+              </radialGradient>
+              <linearGradient id="outerFlame" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stopColor={airHoleLevel >= 2 ? '#60A5FA' : '#FB923C'} stopOpacity="0.95" />
+                <stop offset="55%" stopColor={airHoleLevel >= 2 ? '#22D3EE' : '#FDE68A'} stopOpacity="0.92" />
+                <stop offset="100%" stopColor={airHoleLevel >= 2 ? '#E0F2FE' : '#FFF7ED'} stopOpacity="0.88" />
+              </linearGradient>
+              <linearGradient id="innerFlame" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stopColor={airHoleLevel >= 2 ? '#1D4ED8' : '#F59E0B'} stopOpacity="0.9" />
+                <stop offset="100%" stopColor={airHoleLevel >= 2 ? '#93C5FD' : '#FEF3C7'} stopOpacity="0.65" />
+              </linearGradient>
+              <filter id="softBlur" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="6" />
+              </filter>
+            </defs>
+
+            <g style={{ transformOrigin: '90px 190px', transform: `scale(${[0.85, 0.95, 1.15, 1.3][airHoleLevel]})` }}>
+              <ellipse cx="90" cy="150" rx="62" ry="48" fill="url(#flameGlow)" filter="url(#softBlur)" />
+              <path
+                d="M90 30 C72 58 66 78 66 102 C66 134 80 156 90 178 C100 156 114 134 114 102 C114 78 108 58 90 30 Z"
+                fill="url(#outerFlame)"
+                opacity="0.95"
+              />
+              {airHoleLevel >= 2 ? (
+                <path
+                  d="M90 64 C81 80 78 94 78 110 C78 132 86 148 90 160 C94 148 102 132 102 110 C102 94 99 80 90 64 Z"
+                  fill="url(#innerFlame)"
+                  opacity="0.95"
+                />
+              ) : (
+                <path
+                  d="M90 84 C84 98 82 112 82 124 C82 142 88 156 90 164 C92 156 98 142 98 124 C98 112 96 98 90 84 Z"
+                  fill="url(#innerFlame)"
+                  opacity="0.45"
+                />
+              )}
+            </g>
+          </svg>
+        )}
+
+        <svg width="260" height="380" viewBox="0 0 260 380" className="drop-shadow-2xl">
+          <defs>
+            <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#9CA3AF" />
+              <stop offset="12%" stopColor="#F8FAFC" />
+              <stop offset="32%" stopColor="#CBD5E1" />
+              <stop offset="55%" stopColor="#F1F5F9" />
+              <stop offset="78%" stopColor="#9CA3AF" />
+              <stop offset="100%" stopColor="#E2E8F0" />
+            </linearGradient>
+            <linearGradient id="chromeDark" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#64748B" />
+              <stop offset="50%" stopColor="#94A3B8" />
+              <stop offset="100%" stopColor="#475569" />
+            </linearGradient>
+            <linearGradient id="blueBase" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#1D4ED8" />
+              <stop offset="55%" stopColor="#2563EB" />
+              <stop offset="100%" stopColor="#1E40AF" />
+            </linearGradient>
+            <linearGradient id="blueBaseDark" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0B2A7A" stopOpacity="0.65" />
+              <stop offset="100%" stopColor="#0B2A7A" stopOpacity="0" />
+            </linearGradient>
+            <radialGradient id="baseShadow" cx="50%" cy="55%" r="60%">
+              <stop offset="0%" stopColor="#000" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#000" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+
+          <ellipse cx="130" cy="350" rx="108" ry="22" fill="url(#baseShadow)" />
+
+          {/* blue base (matches reference) */}
+          <path
+            d="M64 332 C64 300 90 276 130 276 C170 276 196 300 196 332 C196 360 170 368 130 368 C90 368 64 360 64 332 Z"
+            fill="url(#blueBase)"
+          />
+          <path
+            d="M78 330 C78 306 98 292 130 292 C162 292 182 306 182 330 C182 346 162 354 130 354 C98 354 78 346 78 330 Z"
+            fill="#0B1220"
+            opacity="0.18"
+          />
+          <path
+            d="M64 332 C64 300 90 276 130 276 C170 276 196 300 196 332 C196 360 170 368 130 368 C90 368 64 360 64 332 Z"
+            fill="url(#blueBaseDark)"
+          />
+
+          {/* side gas inlet nozzle */}
+          <g>
+            <rect x="44" y="302" width="58" height="18" rx="9" fill="#1E40AF" />
+            <rect x="40" y="306" width="18" height="10" rx="5" fill="#1D4ED8" />
+            <rect x="58" y="306" width="38" height="10" rx="5" fill="#60A5FA" opacity="0.35" />
+            <rect x="50" y="296" width="16" height="30" rx="8" fill="#0B2A7A" opacity="0.55" />
+          </g>
+
+          {/* burner neck into base */}
+          <path d="M104 286 C108 260 114 242 118 224 C120 214 124 202 125 190 L135 190 C136 202 140 214 142 224 C146 242 152 260 156 286 Z" fill="#1F2937" opacity="0.35" />
+
+          {/* tall chrome barrel */}
+          <rect x="114" y="42" width="32" height="240" rx="12" fill="url(#chrome)" stroke="#9CA3AF" strokeOpacity="0.55" />
+          <rect x="119" y="52" width="22" height="218" rx="10" fill="#FFFFFF" opacity="0.18" />
+
+          {/* top lip */}
+          <rect x="110" y="30" width="40" height="18" rx="8" fill="url(#chromeDark)" opacity="0.95" />
+          <rect x="114" y="34" width="32" height="10" rx="5" fill="#F8FAFC" opacity="0.35" />
+
+          {/* collar window/control (simple) */}
+          <rect x="106" y="176" width="48" height="44" rx="18" fill="#D1D5DB" opacity="0.95" />
+          <rect x="112" y="182" width="36" height="32" rx="14" fill="#111827" opacity="0.16" />
+          <g style={{ transformOrigin: '130px 198px', transform: `rotate(${airHoleLevel * 22}deg)` }}>
+            <rect x="124" y="186" width="12" height="24" rx="6" fill="#334155" />
+            <circle cx="130" cy="198" r="5" fill="#0F172A" opacity="0.6" />
+          </g>
+        </svg>
       </div>
-      <div className="w-32 h-6 bg-slate-400 rounded-t-2xl border-x-2 border-slate-500 relative -mt-1 shadow-lg" />
-      <div className="w-40 h-10 bg-slate-800 rounded-xl shadow-2xl" />
     </div>
   );
 };
@@ -227,63 +327,192 @@ const RealisticBeamBalance = ({ leftMass, rightMass }: { leftMass: number, right
   const tilt = Math.max(-maxTilt, Math.min(maxTilt, diff / 10));
 
   return (
-    <div className="relative flex flex-col items-center select-none w-full max-w-[85%] pt-12 transition-transform duration-500 scale-[var(--apparatus-scale)]">
-      <div className="w-8 h-64 bg-slate-300 border-x border-slate-400 relative z-10 flex flex-col items-center">
-         <div className="w-12 h-12 bg-slate-800 rounded-full border-4 border-slate-400 mt-10 shadow-lg flex items-center justify-center" />
-      </div>
-      <div className="w-48 h-8 bg-slate-800 rounded-t-xl -mt-2 shadow-xl" />
-      <div 
-        className="absolute top-[100px] w-full transition-transform duration-700 ease-out"
-        style={{ transform: `rotate(${tilt}deg)` }}
-      >
-        <div className="absolute left-0 right-0 h-4 bg-gradient-to-b from-slate-300 to-slate-400 rounded-full border border-slate-400 shadow-sm mx-4 md:mx-8" />
-        <div className="flex justify-between w-full px-2 md:px-4">
-          <div className="flex flex-col items-center" style={{ transform: `rotate(${-tilt}deg)` }}>
-            <div className="w-0.5 h-32 bg-slate-400" />
-            <div className="w-24 md:w-40 h-6 bg-slate-200 border-2 border-slate-300 rounded-b-3xl shadow-inner flex items-center justify-center">
-               {leftMass > 0 && <span className="text-[10px] font-black text-slate-500">{leftMass}g</span>}
-            </div>
-          </div>
-          <div className="flex flex-col items-center" style={{ transform: `rotate(${-tilt}deg)` }}>
-            <div className="w-0.5 h-32 bg-slate-400" />
-            <div className="w-24 md:w-40 h-6 bg-slate-200 border-2 border-slate-300 rounded-b-3xl shadow-inner flex items-center justify-center">
-               {rightMass > 0 && <span className="text-[10px] font-black text-slate-500">{rightMass}g</span>}
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="relative flex flex-col items-center justify-center select-none w-full pt-6 transition-transform duration-500 scale-[var(--apparatus-scale)]">
+      <svg width="520" height="420" viewBox="0 0 520 420" className="w-full max-w-[360px] sm:max-w-[460px] md:max-w-[520px] h-auto drop-shadow-2xl">
+        <defs>
+          <linearGradient id="bbMetal" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#94A3B8" />
+            <stop offset="18%" stopColor="#F8FAFC" />
+            <stop offset="50%" stopColor="#CBD5E1" />
+            <stop offset="82%" stopColor="#F1F5F9" />
+            <stop offset="100%" stopColor="#94A3B8" />
+          </linearGradient>
+          <linearGradient id="bbDark" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#0F172A" />
+            <stop offset="50%" stopColor="#334155" />
+            <stop offset="100%" stopColor="#0B1220" />
+          </linearGradient>
+          <radialGradient id="bbShadow" cx="50%" cy="55%" r="60%">
+            <stop offset="0%" stopColor="#000" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#000" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* base shadow */}
+        <ellipse cx="260" cy="392" rx="190" ry="22" fill="url(#bbShadow)" />
+
+        {/* base */}
+        <path d="M150 368 C150 340 175 322 260 322 C345 322 370 340 370 368 C370 392 345 402 260 402 C175 402 150 392 150 368 Z" fill="url(#bbDark)" />
+        <path d="M166 366 C166 350 186 338 260 338 C334 338 354 350 354 366 C354 378 334 386 260 386 C186 386 166 378 166 366 Z" fill="#111827" opacity="0.35" />
+
+        {/* pillar */}
+        <rect x="242" y="110" width="36" height="220" rx="14" fill="url(#bbMetal)" stroke="#94A3B8" strokeOpacity="0.55" />
+        <rect x="250" y="126" width="20" height="190" rx="10" fill="#FFFFFF" opacity="0.18" />
+        <circle cx="260" cy="150" r="26" fill="#0F172A" opacity="0.85" />
+        <circle cx="260" cy="150" r="20" fill="#CBD5E1" opacity="0.35" />
+
+        {/* beam + pans group (tilts) */}
+        <g style={{ transformOrigin: '260px 160px', transform: `rotate(${tilt}deg)` }}>
+          {/* beam */}
+          <rect x="110" y="150" width="300" height="18" rx="9" fill="url(#bbMetal)" stroke="#94A3B8" strokeOpacity="0.55" />
+          <rect x="120" y="154" width="280" height="10" rx="5" fill="#0F172A" opacity="0.10" />
+
+          {/* left hanger */}
+          <line x1="140" y1="168" x2="140" y2="250" stroke="#94A3B8" strokeWidth="4" />
+          <line x1="140" y1="250" x2="120" y2="270" stroke="#94A3B8" strokeWidth="3" />
+          <line x1="140" y1="250" x2="160" y2="270" stroke="#94A3B8" strokeWidth="3" />
+          {/* left pan */}
+          <path d="M90 276 C98 292 122 300 140 300 C158 300 182 292 190 276 Z" fill="#E2E8F0" stroke="#CBD5E1" />
+          <ellipse cx="140" cy="276" rx="52" ry="10" fill="#CBD5E1" opacity="0.6" />
+
+          {/* right hanger */}
+          <line x1="380" y1="168" x2="380" y2="250" stroke="#94A3B8" strokeWidth="4" />
+          <line x1="380" y1="250" x2="360" y2="270" stroke="#94A3B8" strokeWidth="3" />
+          <line x1="380" y1="250" x2="400" y2="270" stroke="#94A3B8" strokeWidth="3" />
+          {/* right pan */}
+          <path d="M330 276 C338 292 362 300 380 300 C398 300 422 292 430 276 Z" fill="#E2E8F0" stroke="#CBD5E1" />
+          <ellipse cx="380" cy="276" rx="52" ry="10" fill="#CBD5E1" opacity="0.6" />
+
+          {/* weights (simple cylinders) */}
+          {leftMass > 0 && (
+            <g>
+              <rect x="126" y="246" width="28" height="26" rx="6" fill="#9CA3AF" />
+              <rect x="130" y="250" width="20" height="18" rx="5" fill="#F1F5F9" opacity="0.35" />
+              <text x="140" y="264" textAnchor="middle" fontSize="10" fontWeight="800" fill="#334155">{leftMass}g</text>
+            </g>
+          )}
+          {rightMass > 0 && (
+            <g>
+              <rect x="366" y="246" width="28" height="26" rx="6" fill="#9CA3AF" />
+              <rect x="370" y="250" width="20" height="18" rx="5" fill="#F1F5F9" opacity="0.35" />
+              <text x="380" y="264" textAnchor="middle" fontSize="10" fontWeight="800" fill="#334155">{rightMass}g</text>
+            </g>
+          )}
+        </g>
+      </svg>
     </div>
   );
 };
 
-const RealisticThermometer = ({ temperature }: { temperature: number }) => {
+const RealisticThermometer = ({ temperature, sampleId }: { temperature: number; sampleId?: 'room' | 'ice' | 'warm' | 'hot' | 'body' }) => {
   const heightPercent = Math.max(0, Math.min(100, ((temperature + 10) / 120) * 100));
+  const isHot = sampleId === 'hot';
+  const isIce = sampleId === 'ice';
+  const isWarm = sampleId === 'warm';
+  const isBody = sampleId === 'body';
+  const sampleLabel = isIce ? 'Ice Water' : isHot ? 'Hot Water' : isWarm ? 'Warm Water' : isBody ? 'Body Temp' : 'Room Air';
   
   return (
     <div className="relative flex flex-col items-center justify-center select-none z-20 transition-transform duration-500 scale-[var(--apparatus-scale)]">
-       <div className="relative w-12 h-[280px] md:h-[380px] bg-white/80 border-2 border-slate-300 rounded-full flex flex-col items-center justify-end p-2 shadow-lg backdrop-blur-sm">
-          
-          <div className="absolute right-full mr-6 h-[240px] md:h-[320px] bottom-[26px] flex flex-col justify-between items-end text-[11px] font-black text-slate-700 leading-none">
-             {[110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0, -10].map(val => (
-               <div key={val} className="flex items-center gap-3 h-0 relative">
-                  <span className="absolute right-6 whitespace-nowrap">{val}°C</span>
-                  <div className={`h-px bg-slate-500 ${val % 10 === 0 ? 'w-5' : 'w-2'}`} />
-               </div>
-             ))}
-          </div>
+       <div className="relative w-full flex flex-col items-center">
+         <div className="relative w-10 md:w-11">
+           <div className="relative w-10 md:w-11 h-[220px] md:h-[300px] bg-white/80 border-2 border-slate-300 rounded-full flex flex-col items-center justify-end p-2 shadow-lg backdrop-blur-sm">
+            
+            <div className="absolute right-full mr-5 h-[190px] md:h-[250px] bottom-[20px] flex flex-col justify-between items-end text-[10px] font-black text-slate-700 leading-none">
+               {[110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0, -10].map(val => (
+                 <div key={val} className="flex items-center gap-3 h-0 relative">
+                    <span className="absolute right-6 whitespace-nowrap">{val}°C</span>
+                    <div className={`h-px bg-slate-500 ${val % 10 === 0 ? 'w-5' : 'w-2'}`} />
+                 </div>
+               ))}
+            </div>
 
-          <div className="relative w-3.5 h-[240px] md:h-[320px] bg-slate-200/40 rounded-full border border-slate-300/50 overflow-hidden mb-4">
-             <div 
-               className="absolute bottom-0 left-0 right-0 bg-rose-600 transition-all duration-1000 ease-in-out shadow-[inset_-2px_0_6px_rgba(0,0,0,0.3)]" 
-               style={{ height: `${heightPercent}%` }}
-             >
-                <div className="absolute right-1 top-0 bottom-0 w-0.5 bg-white/40" />
-             </div>
-          </div>
-          
-          <div className="absolute -bottom-8 w-20 md:w-24 h-20 md:h-24 bg-rose-600 border-4 border-slate-200 rounded-full shadow-[0_4px_20px_rgba(244,63,94,0.6)] z-10 flex items-center justify-center">
-             <div className="absolute top-4 right-6 w-7 h-7 bg-white/30 rounded-full blur-[2px]" />
-          </div>
+            <div className="absolute left-2 top-6 bottom-12 w-2 bg-white/30 rounded-full blur-sm" />
+            <div className="absolute right-2 top-10 bottom-16 w-1.5 bg-white/20 rounded-full blur-sm" />
+
+            <div className="relative w-3 md:w-3.5 h-[190px] md:h-[250px] bg-slate-200/40 rounded-full border border-slate-300/50 overflow-hidden mb-4">
+               <div 
+                 className="absolute bottom-0 left-0 right-0 bg-rose-600 transition-all duration-1000 ease-in-out shadow-[inset_-2px_0_6px_rgba(0,0,0,0.3)]" 
+                 style={{ height: `${heightPercent}%` }}
+               >
+                  <div className="absolute right-1 top-0 bottom-0 w-0.5 bg-white/40" />
+                  {/* meniscus highlight */}
+                  <div className="absolute -top-1 left-0 right-0 h-2 bg-white/30 blur-[0.5px]" />
+               </div>
+            </div>
+            
+            <div className="absolute -bottom-7 w-16 md:w-20 h-16 md:h-20 bg-rose-600 border-4 border-slate-200 rounded-full shadow-[0_4px_18px_rgba(244,63,94,0.55)] z-10 flex items-center justify-center">
+               <div className="absolute top-3 right-4 w-5 md:w-6 h-5 md:h-6 bg-white/30 rounded-full blur-[2px]" />
+            </div>
+           </div>
+         </div>
+
+         {/* beaker below thermometer (bulb dips into beaker) */}
+         <div className="relative -mt-2 md:-mt-3 pointer-events-none">
+           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-36 md:w-44 h-9 bg-black/10 rounded-full blur-md" />
+           <svg width="180" height="180" viewBox="0 0 220 220" className="relative mx-auto">
+             <defs>
+               <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+                 <stop offset="0%" stopColor="#E2E8F0" stopOpacity="0.65" />
+                 <stop offset="45%" stopColor="#FFFFFF" stopOpacity="0.25" />
+                 <stop offset="100%" stopColor="#CBD5E1" stopOpacity="0.75" />
+               </linearGradient>
+               <linearGradient id="liquid" x1="0" y1="0" x2="0" y2="1">
+                 <stop offset="0%" stopColor={isHot ? '#FB7185' : isWarm ? '#F59E0B' : isIce ? '#38BDF8' : isBody ? '#F97316' : '#60A5FA'} stopOpacity="0.9" />
+                 <stop offset="100%" stopColor={isHot ? '#EF4444' : isWarm ? '#D97706' : isIce ? '#0EA5E9' : isBody ? '#EA580C' : '#3B82F6'} stopOpacity="0.95" />
+               </linearGradient>
+               <filter id="steam" x="-40%" y="-40%" width="180%" height="180%">
+                 <feGaussianBlur stdDeviation="2.5" />
+               </filter>
+             </defs>
+
+             {/* beaker body */}
+             <path d="M52 50 H168 V160 C168 188 146 206 110 206 C74 206 52 188 52 160 Z" fill="url(#glass)" stroke="#CBD5E1" strokeWidth="2" />
+             <path d="M56 50 H164" stroke="#94A3B8" strokeWidth="6" strokeLinecap="round" opacity="0.7" />
+             <path d="M64 58 H76" stroke="#FFFFFF" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
+             <path d="M80 58 H96" stroke="#FFFFFF" strokeWidth="6" strokeLinecap="round" opacity="0.35" />
+
+             {/* liquid */}
+             <path
+               d="M62 122 C80 132 98 136 110 136 C122 136 140 132 158 122 V160 C158 178 142 190 110 190 C78 190 62 178 62 160 Z"
+               fill="url(#liquid)"
+               opacity="0.85"
+             />
+             <path d="M62 122 C82 110 98 106 110 106 C122 106 138 110 158 122" stroke="#FFFFFF" strokeOpacity="0.35" strokeWidth="3" />
+
+             {/* ice cubes */}
+             {isIce && (
+               <g opacity="0.95">
+                 <rect x="78" y="122" width="26" height="20" rx="4" fill="#E0F2FE" stroke="#7DD3FC" />
+                 <rect x="112" y="128" width="24" height="18" rx="4" fill="#E0F2FE" stroke="#7DD3FC" />
+                 <rect x="94" y="142" width="22" height="16" rx="4" fill="#E0F2FE" stroke="#7DD3FC" />
+               </g>
+             )}
+
+             {/* steam */}
+             {isHot && (
+               <g filter="url(#steam)" opacity="0.55">
+                 <path d="M84 42 C74 28 90 16 84 6" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round" fill="none" />
+                 <path d="M112 42 C102 28 118 16 112 6" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round" fill="none" />
+                 <path d="M140 42 C130 28 146 16 140 6" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round" fill="none" />
+               </g>
+             )}
+           </svg>
+           <div className="-mt-2 text-center text-[10px] font-black uppercase tracking-widest text-slate-500">{sampleLabel}</div>
+         </div>
+       </div>
+
+       <div className="mt-8 w-40 md:w-48 rounded-2xl border border-slate-200 bg-slate-900 shadow-xl px-4 py-3">
+         <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Digital Reading</div>
+         <div className="mt-1 flex items-end justify-between">
+           <div className="font-black text-3xl md:text-4xl tracking-tight text-emerald-300 tabular-nums">
+             {Math.round(temperature)}
+           </div>
+           <div className="font-black text-sm text-emerald-200">°C</div>
+         </div>
+         <div className="mt-2 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+           <div className="h-full bg-emerald-400" style={{ width: `${Math.max(0, Math.min(100, (Math.round(temperature) + 10) / 120 * 100))}%` }} />
+         </div>
        </div>
     </div>
   );
@@ -644,11 +873,31 @@ const Selection = ({ onExperimentSelect }: { onExperimentSelect: (exp: any) => v
             </button>
           ))}
 
-          {step === 'grade' && selection.section && GRADES[selection.section].map((gradeName) => (
-            <button key={gradeName} onClick={() => setSelection({ ...selection, grade: gradeName })} className="group w-full max-w-[380px] bg-white rounded-[2rem] p-8 md:p-12 flex flex-col items-center transition-all hover:-translate-y-4 shadow-sm border border-gray-100">
-              <h4 className="text-2xl md:text-3xl font-black text-[#1e293b]">{gradeName}</h4>
-            </button>
-          ))}
+          {step === 'grade' && selection.section && GRADES[selection.section].map((gradeName, idx) => {
+            const gradeIcon = selection.section === 'Junior' ? <BookOpen className="w-6 h-6" /> : (selection.section === 'Senior' ? <GraduationCap className="w-6 h-6" /> : <Users className="w-6 h-6" />);
+            const palettes = [
+              { tileBg: 'bg-orange-50', tileText: 'text-orange-500' },
+              { tileBg: 'bg-cyan-50', tileText: 'text-cyan-600' },
+              { tileBg: 'bg-purple-50', tileText: 'text-purple-600' },
+              { tileBg: 'bg-emerald-50', tileText: 'text-emerald-600' },
+              { tileBg: 'bg-amber-50', tileText: 'text-amber-600' },
+              { tileBg: 'bg-indigo-50', tileText: 'text-indigo-600' },
+            ];
+            const p = palettes[idx % palettes.length];
+
+            return (
+              <button
+                key={gradeName}
+                onClick={() => setSelection({ ...selection, grade: gradeName })}
+                className="group w-full max-w-[380px] bg-white rounded-[2rem] p-10 md:p-12 flex flex-col items-center transition-all hover:-translate-y-4 shadow-sm border border-gray-100"
+              >
+                <div className={`w-20 h-20 md:w-24 md:h-24 ${p.tileBg} ${p.tileText} rounded-[1.75rem] flex items-center justify-center mb-7 transition-transform group-hover:scale-110`}>
+                  {gradeIcon}
+                </div>
+                <h4 className="text-2xl md:text-3xl font-black text-[#1e293b] text-center tracking-tight">{gradeName}</h4>
+              </button>
+            );
+          })}
 
           {step === 'subject' && selection.grade && GRADE_SUBJECTS[selection.grade]?.map((name) => (
             <button key={name} onClick={() => setSelection({ ...selection, subject: name })} className="group w-full max-w-[380px] bg-white rounded-[2rem] p-8 md:p-12 flex flex-col items-center transition-all hover:-translate-y-4 shadow-sm border border-gray-100">
@@ -679,19 +928,155 @@ const Selection = ({ onExperimentSelect }: { onExperimentSelect: (exp: any) => v
 // --- LabBench Component ---
 
 const LabBench = ({ experiment, user, onComplete }: { experiment: any, user: UserProfile, onComplete: (xp: number) => void }) => {
-  const [messages, setMessages] = useState<Message[]>([{ role: 'assistant', content: `Habari Scientist ${user.name}! I'm your VirtuLab Assistant. We are starting "${experiment.title}".` }]);
+  const [messages, setMessages] = useState<Message[]>([{ role: 'assistant', content: `Habari Scientist ${user.name}! I'm your VirtuLab Assistant. We are starting "${experiment.title}". Ask me anything about this practical and I will guide you.` }]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isBurnerLit, setIsBurnerLit] = useState(false);
   const [airHoleLevel, setAirHoleLevel] = useState(0); 
   const [temp, setTemp] = useState(25);
+  const [thermoSampleId, setThermoSampleId] = useState<'room' | 'ice' | 'warm' | 'hot' | 'body'>('room');
+  const [leftWeights, setLeftWeights] = useState<number[]>([]);
+  const [rightWeights, setRightWeights] = useState<number[]>([]);
   const [containerScale, setContainerScale] = useState(1);
   const experimentAreaRef = useRef<HTMLDivElement>(null);
 
+  const getOfflineLabGuideAnswer = (question: string) => {
+    const q = question.toLowerCase();
+    if (experiment.id === 'bunsen-burner') {
+      if (q.includes('luminous')) {
+        return "A luminous flame is a yellow/orange Bunsen burner flame produced when the air hole is mostly closed (less oxygen). It is cooler, gives off more light, and can produce soot because combustion is incomplete.";
+      }
+      if (q.includes('non-luminous') || q.includes('blue')) {
+        return "A non-luminous flame is a blue flame produced when the air hole is open (more oxygen). It is hotter, quieter, and burns more cleanly (complete combustion).";
+      }
+      if (q.includes('air hole') || q.includes('collar')) {
+        return "The collar/air hole controls how much air (oxygen) mixes with the gas. More air makes a hotter blue flame; less air makes a yellow luminous flame.";
+      }
+      if (q.includes('hotter') || q.includes('temperature')) {
+        return "The blue non-luminous flame is hotter than the yellow luminous flame because it has more oxygen and burns more completely.";
+      }
+      if (q.includes('safety') || q.includes('safe')) {
+        return "Safety: close the air hole before lighting, keep flammables away, never point the burner at anyone, and turn off gas when finished.";
+      }
+      return "Ask about: luminous vs non-luminous flame, the air hole/collar, why flames change color, which flame is hotter, or safety rules.";
+    }
+    if (experiment.id === 'beam-balance') {
+      if (q.includes('used for') || q.includes('use')) {
+        return "A beam balance is used to measure mass by comparing an unknown object with known standard masses. You add standard masses until the beam is level (balanced).";
+      }
+      if (q.includes('balanced') || q.includes('level')) {
+        const d = rightMass - leftMass;
+        if (Math.abs(d) <= 1) return "The beam is balanced when both pans are equal in mass and the beam is level (no tilt). In this simulation, you are balanced when left mass and right mass are the same (or within 1g).";
+        return `Right now it is NOT balanced. ${d > 0 ? `The right side is heavier by ${Math.abs(d)}g.` : `The left side is heavier by ${Math.abs(d)}g.`} Add mass to the lighter side or remove from the heavier side.`;
+      }
+      if (q.includes('unknown') || q.includes('measure')) {
+        return "To measure an unknown mass: place the object on one pan, then add standard masses to the other pan until the beam is level. The unknown mass equals the total standard masses used.";
+      }
+      if (q.includes('error') || q.includes('mistake')) {
+        return "Common errors: not zeroing the balance first, parallax when reading the pointer, friction at the pivot, air currents, dirty/wet pans, and using incorrect standard masses.";
+      }
+      return "Ask about: what a beam balance is used for, how to know when it is balanced, measuring an unknown mass, or common sources of error.";
+    }
+    if (experiment.id === 'thermometer') {
+      if (q.includes('objective')) {
+        return "Objective: learn how to read a thermometer and compare temperatures of different materials (e.g., ice water vs warm water vs body temperature).";
+      }
+      if (q.includes('digital') || q.includes('reading') || q.includes('read')) {
+        return "Read the temperature at eye level. Use the digital display (°C) and note the value once it stabilizes.";
+      }
+      if (q.includes('ice')) {
+        return "Ice water is usually around 0°C (it can be slightly above 0°C if the ice is melting or if there is salt).";
+      }
+      if (q.includes('body') || q.includes('human')) {
+        return "Normal human body temperature is about 37°C (it can vary slightly).";
+      }
+      if (q.includes('why') && (q.includes('change') || q.includes('rise') || q.includes('fall'))) {
+        return "The thermometer changes because heat flows from the warmer object to the cooler object until they reach thermal equilibrium.";
+      }
+      return "Ask about: how to read a thermometer, why temperature changes, typical values (ice water ~0°C, body ~37°C), or the objective.";
+    }
+    return "I can help with this practical, but AI is currently unavailable. Ask a question directly about the experiment.";
+  };
+
+  const guidedQuestions = (() => {
+    if (experiment.id === 'bunsen-burner') {
+      return [
+        'What is a luminous flame?',
+        'What is a non-luminous (blue) flame?',
+        'Which flame is hotter and why?',
+        'What does the air hole/collar control?',
+        'What are the safety rules when using a Bunsen burner?'
+      ];
+    }
+    if (experiment.id === 'beam-balance') {
+      return [
+        'What is a beam balance used for?',
+        'How do I know when the beam is balanced?',
+        'How do I measure an unknown mass using standard masses?',
+        'What are common sources of error in a beam balance?' 
+      ];
+    }
+    if (experiment.id === 'thermometer') {
+      return [
+        'How do I read a thermometer correctly?',
+        'Why does the thermometer reading change over time?',
+        'What temperature should ice water be?',
+        'What is normal human body temperature?',
+      ];
+    }
+    return [
+      'What is the objective of this experiment?',
+      'What safety steps should I follow?',
+      'What should I observe and record?',
+      'What could cause errors in this practical?'
+    ];
+  })();
+
+  const thermoSamples = [
+    { id: 'ice' as const, label: 'Ice Water', desc: 'Cold sample', target: 0 },
+    { id: 'room' as const, label: 'Room Air', desc: 'Ambient', target: 25 },
+    { id: 'warm' as const, label: 'Warm Water', desc: 'Comfort warm', target: 40 },
+    { id: 'body' as const, label: 'Body Temp', desc: 'Human', target: 37 },
+    { id: 'hot' as const, label: 'Hot Water', desc: 'Very hot', target: 80 },
+  ];
+  const thermoTarget = thermoSamples.find(s => s.id === thermoSampleId)?.target ?? 25;
+
+  const leftMass = leftWeights.reduce((a, b) => a + b, 0);
+  const rightMass = rightWeights.reduce((a, b) => a + b, 0);
+  const availableMasses = [1, 2, 5, 10, 20, 50, 100];
+
+  const massDiff = rightMass - leftMass;
+  const isBalanced = experiment.id === 'beam-balance' ? Math.abs(massDiff) <= 1 : false;
+  const balanceText = experiment.id !== 'beam-balance'
+    ? ''
+    : isBalanced
+      ? `Balanced ✓ (Left ${leftMass}g = Right ${rightMass}g)`
+      : massDiff > 0
+        ? `Not balanced: Right heavier by ${Math.abs(massDiff)}g`
+        : `Not balanced: Left heavier by ${Math.abs(massDiff)}g`;
+
+  const addWeight = (side: 'left' | 'right', mass: number) => {
+    if (side === 'left') setLeftWeights(prev => [...prev, mass]);
+    else setRightWeights(prev => [...prev, mass]);
+  };
+  const undoWeight = (side: 'left' | 'right') => {
+    if (side === 'left') setLeftWeights(prev => prev.slice(0, -1));
+    else setRightWeights(prev => prev.slice(0, -1));
+  };
+  const clearWeights = () => { setLeftWeights([]); setRightWeights([]); };
+
   useEffect(() => {
-    const handleResize = () => { if (experimentAreaRef.current) setContainerScale(Math.min(experimentAreaRef.current.offsetWidth / 500, experimentAreaRef.current.offsetHeight / 700, 1.4)); };
-    handleResize(); window.addEventListener('resize', handleResize); return () => window.removeEventListener('resize', handleResize);
+    const handleResize = () => {
+      if (!experimentAreaRef.current) return;
+      // Use width-only scaling to avoid a feedback loop where scaled content increases
+      // the container height, which then increases scale again.
+      const next = Math.min(experimentAreaRef.current.offsetWidth / 520, 1.1);
+      setContainerScale(prev => (Math.abs(prev - next) < 0.01 ? prev : next));
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight; }, [messages]);
@@ -699,41 +1084,171 @@ const LabBench = ({ experiment, user, onComplete }: { experiment: any, user: Use
   useEffect(() => {
     let timer: number;
     if (isBurnerLit && experiment.id === 'bunsen-burner') {
-      timer = window.setInterval(() => { setTemp(prev => { const next = prev + [0.1, 0.4, 1.5, 3.2][airHoleLevel]; return next > 800 ? 800 : next; }); }, 400);
+      timer = window.setInterval(() => {
+        const base = [40, 55, 75, 95][airHoleLevel];
+        setTemp(prev => Math.min(base + 5, prev + 1 + airHoleLevel * 0.2));
+      }, 900);
     } else { timer = window.setInterval(() => { setTemp(prev => prev > 25 ? prev - 0.5 : 25); }, 1000); }
     return () => clearInterval(timer);
   }, [isBurnerLit, airHoleLevel, experiment.id]);
 
-  const handleSendMessage = async () => {
-    if (!input.trim()) return;
-    const userMsg = input; setInput(''); setMessages(prev => [...prev, { role: 'user', content: userMsg }]); setIsTyping(true);
+  useEffect(() => {
+    if (experiment.id !== 'thermometer') return;
+    const timer = window.setInterval(() => {
+      setTemp(prev => {
+        const diff = thermoTarget - prev;
+        if (Math.abs(diff) < 0.2) return thermoTarget;
+        const step = Math.max(0.15, Math.min(1.2, Math.abs(diff) * 0.08));
+        return prev + Math.sign(diff) * step;
+      });
+    }, 250);
+    return () => clearInterval(timer);
+  }, [experiment.id, thermoTarget]);
+
+  const sendLabGuideMessage = async (rawMsg: string) => {
+    const userMsg = rawMsg.trim();
+    if (!userMsg) return;
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setIsTyping(true);
     try {
+      if (experiment.id === 'beam-balance') {
+        setMessages(prev => [...prev, { role: 'assistant', content: getOfflineLabGuideAnswer(userMsg) }]);
+        return;
+      }
+      if (experiment.id === 'thermometer') {
+        setMessages(prev => [...prev, { role: 'assistant', content: getOfflineLabGuideAnswer(userMsg) }]);
+        return;
+      }
       // Re-initialize for each request to ensure we have the most current API key
       const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined;
       if (!apiKey) {
         setMessages(prev => [...prev, { role: 'assistant', content: "Gemini API key missing. Add VITE_GEMINI_API_KEY to .env.local and restart the dev server." }]);
         return;
       }
+
+      const recentChat = messages.slice(-4).map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n');
+      const apparatusState = experiment.id === 'bunsen-burner'
+        ? `Apparatus state: burnerLit=${isBurnerLit}; airHoleLevel=${airHoleLevel} (0=Close,1=Slightly,2=Half,3=Fully); temperatureC=${Math.round(temp)}.`
+        : `Apparatus state: temperatureC=${Math.round(temp)}.`;
+
       const ai = new GoogleGenAI({ apiKey });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
-        contents: `Lab: ${experiment.title}. Student: "${userMsg}"`,
-        config: { systemInstruction: "Scientific lab instructor. Concise, encouraging feedback." }
-      });
-      setMessages(prev => [...prev, { role: 'assistant', content: response.text || "Indeed!" }]);
-    } catch (e) { setMessages(prev => [...prev, { role: 'assistant', content: "My sensors are recalibrating!" }]); } finally { setIsTyping(false); }
+      const prompt = [
+        `You are the VirtuLab Lab Guide.`,
+        `Experiment Title: ${experiment.title}`,
+        `Experiment Description: ${experiment.desc || ''}`,
+        `Experiment Id: ${experiment.id}`,
+        apparatusState,
+        `Conversation so far (most recent):\n${recentChat}`,
+        `Student question: ${userMsg}`,
+        `Answer as a science lab instructor. Be accurate, practical, and safety-conscious. If the question is not about this experiment, politely redirect back to this experiment.`
+      ].join('\n\n');
+
+      const modelsToTry = [
+        // Commonly available model IDs for the @google/genai (v1beta) endpoint
+        'gemini-2.0-flash-001',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash-002',
+        'gemini-1.5-flash-001',
+        'gemini-1.5-pro-002',
+        'gemini-1.5-pro-001',
+        // some projects expose these aliases
+        'gemini-1.5-flash-latest',
+        'gemini-1.5-pro-latest',
+      ];
+
+      let responseText: string | undefined;
+      let lastErr: any = null;
+      for (const model of modelsToTry) {
+        try {
+          const resp = await ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: { systemInstruction: "You are a science lab instructor for the current experiment. Give concise, step-by-step guidance and answer questions specifically about the experiment." }
+          });
+          responseText = resp.text;
+          break;
+        } catch (err: any) {
+          lastErr = err;
+          const msg = typeof err?.message === 'string' ? err.message : '';
+          if (!msg.toLowerCase().includes('not found')) {
+            break;
+          }
+        }
+      }
+
+      if (!responseText) {
+        const tried = modelsToTry.join(', ');
+        const baseMsg = lastErr?.message ? String(lastErr.message) : 'No compatible Gemini model found.';
+        throw new Error(`${baseMsg} (tried: ${tried})`);
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: responseText || "Indeed!" }]);
+    } catch (e: any) {
+      console.error('Lab Guide error:', e);
+      const msg = typeof e?.message === 'string' ? e.message : 'Unknown error';
+      if (msg.includes('RESOURCE_EXHAUSTED') || msg.includes('Quota exceeded') || msg.includes('429')) {
+        setMessages(prev => [...prev, { role: 'assistant', content: getOfflineLabGuideAnswer(userMsg) }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content: `Lab Guide error: ${msg}. Check VITE_GEMINI_API_KEY in .env.local and restart the dev server.` }]);
+      }
+    } finally { setIsTyping(false); }
   };
+
+  const handleSendMessage = async () => sendLabGuideMessage(input);
 
   return (
     <div className="min-h-screen bg-white pt-20 pb-8 px-4 md:px-6 font-sans overflow-x-hidden" style={{ "--apparatus-scale": containerScale } as any}>
       <div className="max-w-screen-2xl mx-auto flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-10 h-full">
         <div className="lg:col-span-8 flex flex-col gap-6 h-full items-center">
+          <div className="w-full bg-slate-50 border-2 border-slate-200 rounded-[2.5rem] shadow-sm p-6 md:p-8">
+            <div className="flex items-start justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3">
+                  <FlaskConical className="w-6 h-6 text-[#249e91]" />
+                  <h3 className="text-lg md:text-xl font-black text-slate-800 uppercase tracking-tight">Experiment Brief</h3>
+                </div>
+                <p className="mt-3 text-slate-600 font-semibold leading-relaxed">{experiment.desc}</p>
+                {experiment.id === 'bunsen-burner' && (
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white rounded-2xl border border-slate-200 p-4">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Objective</p>
+                      <p className="mt-2 text-sm font-bold text-slate-700">Identify parts of a Bunsen burner and explain flame types.</p>
+                    </div>
+                    <div className="bg-white rounded-2xl border border-slate-200 p-4">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Key idea</p>
+                      <p className="mt-2 text-sm font-bold text-slate-700">More air → hotter blue flame (non-luminous). Less air → yellow flame (luminous).</p>
+                    </div>
+                    <div className="bg-white rounded-2xl border border-slate-200 p-4">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Safety</p>
+                      <p className="mt-2 text-sm font-bold text-slate-700">Keep the air hole closed when lighting. Never point the flame at people.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="hidden md:flex flex-col items-end gap-2 text-slate-400">
+                <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest"><MessageSquare className="w-4 h-4" />Ask the Lab Guide</div>
+                <div className="text-xs font-bold">
+                  {experiment.id === 'beam-balance'
+                    ? 'Try: “How do I know when the beam is balanced?”'
+                    : experiment.id === 'thermometer'
+                      ? 'Try: “Why does the thermometer reading change over time?”'
+                      : 'Try: “What is a luminous flame?”'}
+                </div>
+              </div>
+            </div>
+          </div>
           <div ref={experimentAreaRef} className="flex-1 w-full bg-[#f8fafc] border-2 border-slate-200 rounded-[2.5rem] shadow-inner flex flex-col items-center justify-between py-12 min-h-[600px] lg:min-h-0">
             <h3 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter text-center">{experiment.title}</h3>
+            {experiment.id === 'beam-balance' && (
+              <div className={`mt-3 px-4 py-2 rounded-2xl border text-xs font-black uppercase tracking-widest ${isBalanced ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+                {balanceText}
+              </div>
+            )}
             <div className="flex-1 w-full flex items-center justify-center p-8">
               {experiment.id === 'bunsen-burner' && <RealisticBunsenBurner airHoleLevel={airHoleLevel} isLit={isBurnerLit} />}
-              {experiment.id === 'beam-balance' && <RealisticBeamBalance leftMass={0} rightMass={0} />}
-              {experiment.id === 'thermometer' && <RealisticThermometer temperature={temp} />}
+              {experiment.id === 'beam-balance' && <RealisticBeamBalance leftMass={leftMass} rightMass={rightMass} />}
+              {experiment.id === 'thermometer' && <RealisticThermometer temperature={temp} sampleId={thermoSampleId} />}
             </div>
             {experiment.id === 'bunsen-burner' && (
               <div className="bg-white p-6 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col gap-4 w-full max-w-md mx-auto">
@@ -742,6 +1257,65 @@ const LabBench = ({ experiment, user, onComplete }: { experiment: any, user: Use
                   {['Close', 'Slightly', 'Half', 'Fully'].map((lbl, idx) => (
                     <button key={idx} onClick={() => setAirHoleLevel(idx)} className={`flex-1 py-3 rounded-2xl border-2 transition-all font-black text-[10px] uppercase ${airHoleLevel === idx ? 'bg-slate-900 border-slate-900 text-white' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-400'}`}>{lbl}</button>
                   ))}
+                </div>
+              </div>
+            )}
+            {experiment.id === 'beam-balance' && (
+              <div className="bg-white p-6 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col gap-4 w-full max-w-2xl mx-auto">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-xs font-black uppercase text-slate-500">Standard Masses</span>
+                  <button onClick={clearWeights} className="text-xs font-black uppercase text-slate-500 hover:text-red-600 transition-colors">Clear</button>
+                </div>
+                <div className="grid grid-cols-7 gap-2">
+                  {availableMasses.map(m => (
+                    <div key={m} className="flex flex-col gap-2">
+                      <div className="text-center text-[10px] font-black text-slate-500">{m}g</div>
+                      <button onClick={() => addWeight('left', m)} className="py-2 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700 font-black text-[10px] uppercase hover:border-slate-400">Left</button>
+                      <button onClick={() => addWeight('right', m)} className="py-2 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700 font-black text-[10px] uppercase hover:border-slate-400">Right</button>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Left Pan</div>
+                      <button onClick={() => undoWeight('left')} className="text-[10px] font-black uppercase text-slate-500 hover:text-slate-900">Undo</button>
+                    </div>
+                    <div className="mt-2 text-sm font-black text-slate-800">{leftMass}g</div>
+                    <div className="mt-1 text-xs font-semibold text-slate-500">[{leftWeights.join(', ') || '—'}]</div>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Right Pan</div>
+                      <button onClick={() => undoWeight('right')} className="text-[10px] font-black uppercase text-slate-500 hover:text-slate-900">Undo</button>
+                    </div>
+                    <div className="mt-2 text-sm font-black text-slate-800">{rightMass}g</div>
+                    <div className="mt-1 text-xs font-semibold text-slate-500">[{rightWeights.join(', ') || '—'}]</div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {experiment.id === 'thermometer' && (
+              <div className="bg-white p-6 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col gap-4 w-full max-w-2xl mx-auto">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-xs font-black uppercase text-slate-500">Samples to Measure</span>
+                  <div className="text-xs font-black text-slate-500">Current: {Math.round(temp)}°C</div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+                  {thermoSamples.map(s => (
+                    <button
+                      key={s.id}
+                      onClick={() => setThermoSampleId(s.id)}
+                      className={`text-left px-4 py-3 rounded-2xl border-2 transition-colors ${thermoSampleId === s.id ? 'bg-slate-900 border-slate-900 text-white' : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-400'}`}
+                    >
+                      <div className="text-[11px] font-black uppercase tracking-widest">{s.label}</div>
+                      <div className={`text-xs font-semibold ${thermoSampleId === s.id ? 'text-white/80' : 'text-slate-500'}`}>{s.desc}</div>
+                      <div className={`mt-2 text-sm font-black ${thermoSampleId === s.id ? 'text-emerald-300' : 'text-emerald-700'}`}>Target ~ {s.target}°C</div>
+                    </button>
+                  ))}
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-700">
+                  Place the thermometer in the selected sample and wait for the reading to stabilize.
                 </div>
               </div>
             )}
@@ -757,7 +1331,21 @@ const LabBench = ({ experiment, user, onComplete }: { experiment: any, user: Use
               <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4">
                  {messages.map((msg, i) => (<div key={i} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}><div className={`px-4 py-3 rounded-[1.5rem] text-sm font-semibold max-w-[95%] ${msg.role === 'user' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'}`}>{msg.content}</div></div>))}
               </div>
-              <div className="p-6 border-t"><input type="text" placeholder="Ask your lab guide..." className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-6 py-4 outline-none" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendMessage()} /></div>
+              <div className="p-6 border-t">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Guided Questions</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {guidedQuestions.map((q) => (
+                    <button
+                      key={q}
+                      disabled={isTyping}
+                      onClick={() => sendLabGuideMessage(q)}
+                      className={`text-left px-4 py-3 rounded-2xl border-2 transition-colors font-bold text-sm ${isTyping ? 'bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
            </div>
         </div>
       </div>
