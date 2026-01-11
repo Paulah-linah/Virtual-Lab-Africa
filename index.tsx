@@ -298,6 +298,12 @@ const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false);
   const isLabView = view === 'lab';
 
+  const XP_PER_LEVEL = 1000;
+  const totalXp = profile.xp || 0;
+  const level = Math.floor(totalXp / XP_PER_LEVEL) + 1;
+  const xpIntoLevel = totalXp % XP_PER_LEVEL;
+  const xpPct = (xpIntoLevel / XP_PER_LEVEL) * 100;
+
   const navLinks = [
     { label: 'Virtual Labs', icon: <FlaskConical className="w-5 h-5" />, action: () => setView('selection') },
     { label: 'Curriculum', icon: <BookOpen className="w-5 h-5" />, action: () => setView('selection') },
@@ -417,7 +423,7 @@ const Navbar = () => {
                 e.stopPropagation();
                 setShowProfile(!showProfile);
               }}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-slate-200 p-0.5 overflow-hidden transition-transform hover:scale-110"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-slate-200 p-0.5 overflow-hidden transition-transform hover:scale-110 hover:shadow-[0_0_18px_rgba(36,158,145,0.35)] hover:border-[#249e91]"
             >
               <img
                 src={profile.avatar}
@@ -449,8 +455,23 @@ const Navbar = () => {
                       }}
                     />
                     <div>
-                      <p className="font-bold text-slate-800">Scientist {profile.name || 'Scientist'}</p>
-                      <p className="text-xs text-slate-500">XP: {profile.xp || 0}</p>
+                      <div className="flex items-center gap-2">
+                        <FlaskConical className="w-4 h-4 text-[#249e91]" />
+                        <p className="font-bold text-slate-800">Scientist {profile.name || 'Scientist'}</p>
+                      </div>
+                      <p className="text-xs text-slate-500">Level {level} • {totalXp} XP</p>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-[10px] font-black text-slate-400">
+                      <span>XP Progress</span>
+                      <span>{xpIntoLevel}/{XP_PER_LEVEL}</span>
+                    </div>
+                    <div className="mt-2 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-[#249e91] to-[#1a7a73]"
+                        style={{ width: `${xpPct}%` }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1349,7 +1370,13 @@ const ViewportManager = () => {
           <LabBench 
             experiment={activeExp} 
             user={profile} 
-            onComplete={() => setView('selection')} 
+            onComplete={(xp) => {
+              setProfile(prev => ({
+                ...prev,
+                xp: (prev.xp || 0) + xp,
+              }));
+              setView('selection');
+            }} 
           />
         )}
       </main>
