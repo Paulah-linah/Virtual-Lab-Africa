@@ -709,7 +709,12 @@ const LabBench = ({ experiment, user, onComplete }: { experiment: any, user: Use
     const userMsg = input; setInput(''); setMessages(prev => [...prev, { role: 'user', content: userMsg }]); setIsTyping(true);
     try {
       // Re-initialize for each request to ensure we have the most current API key
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined;
+      if (!apiKey) {
+        setMessages(prev => [...prev, { role: 'assistant', content: "Gemini API key missing. Add VITE_GEMINI_API_KEY to .env.local and restart the dev server." }]);
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: 'gemini-3-pro-preview',
         contents: `Lab: ${experiment.title}. Student: "${userMsg}"`,
