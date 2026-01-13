@@ -1123,7 +1123,7 @@ const LabBench = ({ experiment, user, onComplete }: { experiment: any, user: Use
       // Re-initialize for each request to ensure we have the most current API key
       const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY as string | undefined;
       if (!apiKey) {
-        setMessages(prev => [...prev, { role: 'assistant', content: "Gemini API key missing. Add VITE_GEMINI_API_KEY to .env.local and restart the dev server." }]);
+        setMessages(prev => [...prev, { role: 'assistant', content: getOfflineLabGuideAnswer(userMsg) }]);
         return;
       }
 
