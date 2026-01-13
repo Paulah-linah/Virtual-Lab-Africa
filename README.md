@@ -1,20 +1,17 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+🧪 VirtuLab Africa
 
-# Run and deploy your AI Studio app
+VirtuLab Africa is a virtual science learning platform that helps students learn science using interactive simulations and summarized curriculum notes.
 
-This contains everything you need to run your app locally.
+It allows learners to:
 
-View your app in AI Studio: https://ai.studio/apps/drive/1Vnw0v_LVscUZo5xl-0ef7WEvYg2xW8p4
+Read clear science notes
 
-## Run Locally
+Practice virtual experiments
 
-**Prerequisites:**  Node.js
+Learn how to use laboratory apparatus
 
+Understand safety rules and measurements
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+The app works on mobile, tablet, and desktop and is designed to support schools with limited laboratory resources.
+
+This project is currently in MVP stage.
