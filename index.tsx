@@ -57,12 +57,21 @@ import {
   Shield,
   Stethoscope,
   Lightbulb,
-  Microscope
+  Microscope,
+  Skull,
+  Radiation,
+  Ruler,
+  Timer,
+  Square,
+  Triangle,
+  Box,
+  TestTube,
+  Hand
 } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
 // --- Types & Interfaces ---
-type AppView = 'landing' | 'onboarding' | 'selection' | 'lab' | 'admin' | 'about';
+type AppView = 'landing' | 'onboarding' | 'selection' | 'curriculum' | 'lab' | 'admin' | 'about';
 type EducationSection = 'Junior' | 'Senior' | 'Diploma';
 type LearningArea = 'Chemistry' | 'Physics' | 'Biology' | 'Integrated Science' | 'Agriculture' | 'Home Science' | 'Pre-Technical' | 'Computer Science';
 
@@ -535,7 +544,7 @@ const Navbar = () => {
 
   const navLinks = [
     { label: 'Virtual Labs', icon: <FlaskConical className="w-5 h-5" />, action: () => setView('selection') },
-    { label: 'Curriculum', icon: <BookOpen className="w-5 h-5" />, action: () => setView('selection') },
+    { label: 'Curriculum', icon: <BookOpen className="w-5 h-5" />, action: () => setView('curriculum') },
     { label: 'About', icon: <Info className="w-5 h-5" />, action: () => setView('about') },
   ];
 
@@ -920,6 +929,661 @@ const Selection = ({ onExperimentSelect }: { onExperimentSelect: (exp: any) => v
             <ChevronLeft className="w-5 h-5" /> Back
           </button>
         )}
+      </div>
+    </section>
+  );
+};
+
+const Curriculum = () => {
+  const { setView } = useAppState();
+  const [selection, setSelection] = useState<{ section: EducationSection | null, grade: string | null, subject: LearningArea | null }>({
+    section: null,
+    grade: null,
+    subject: null,
+  });
+
+  const step = !selection.section ? 'level' : (!selection.grade ? 'grade' : (!selection.subject ? 'subject' : 'notes'));
+  const showGrade7IntegratedScienceNotes = step === 'notes' && selection.grade === 'Grade 7' && selection.subject === 'Integrated Science';
+
+  return (
+    <section className="relative min-h-screen bg-slate-50 flex flex-col items-center pt-24 md:pt-32 pb-20 px-4 md:px-6">
+      <div className="relative z-10 w-full max-w-6xl text-center">
+        <h2 className="text-3xl md:text-7xl font-black text-[#1e293b] tracking-tighter mb-4 px-2">
+          {step === 'level' && 'Choose Your Level'}
+          {step === 'grade' && 'Select Your Grade'}
+          {step === 'subject' && 'Choose Your Subject'}
+          {step === 'notes' && 'Curriculum Notes'}
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 w-full justify-items-center mt-12">
+          {step === 'level' && SECTIONS.map((sec) => (
+            <button key={sec.id} onClick={() => setSelection({ ...selection, section: sec.id as EducationSection })} className="group w-full max-w-[380px] bg-white rounded-[2rem] p-8 md:p-12 flex flex-col items-center transition-all hover:-translate-y-4 shadow-sm border border-gray-100">
+              <div className={`w-20 h-20 md:w-28 md:h-28 ${sec.color} rounded-[1.5rem] flex items-center justify-center mb-6 transition-transform group-hover:scale-110`}>{sec.icon}</div>
+              <h4 className="text-xl md:text-2xl font-black text-[#1e293b] mb-2 uppercase tracking-tight">{sec.title}</h4>
+            </button>
+          ))}
+
+          {step === 'grade' && selection.section && GRADES[selection.section].map((gradeName, idx) => {
+            const gradeIcon = selection.section === 'Junior' ? <BookOpen className="w-6 h-6" /> : (selection.section === 'Senior' ? <GraduationCap className="w-6 h-6" /> : <Users className="w-6 h-6" />);
+            const palettes = [
+              { tileBg: 'bg-orange-50', tileText: 'text-orange-500' },
+              { tileBg: 'bg-cyan-50', tileText: 'text-cyan-600' },
+              { tileBg: 'bg-purple-50', tileText: 'text-purple-600' },
+              { tileBg: 'bg-emerald-50', tileText: 'text-emerald-600' },
+              { tileBg: 'bg-amber-50', tileText: 'text-amber-600' },
+              { tileBg: 'bg-indigo-50', tileText: 'text-indigo-600' },
+            ];
+            const p = palettes[idx % palettes.length];
+
+            return (
+              <button
+                key={gradeName}
+                onClick={() => setSelection({ ...selection, grade: gradeName })}
+                className="group w-full max-w-[380px] bg-white rounded-[2rem] p-10 md:p-12 flex flex-col items-center transition-all hover:-translate-y-4 shadow-sm border border-gray-100"
+              >
+                <div className={`w-20 h-20 md:w-24 md:h-24 ${p.tileBg} ${p.tileText} rounded-[1.75rem] flex items-center justify-center mb-7 transition-transform group-hover:scale-110`}>
+                  {gradeIcon}
+                </div>
+                <h4 className="text-2xl md:text-3xl font-black text-[#1e293b] text-center tracking-tight">{gradeName}</h4>
+              </button>
+            );
+          })}
+
+          {step === 'subject' && selection.grade && GRADE_SUBJECTS[selection.grade]?.map((name) => (
+            <button key={name} onClick={() => setSelection({ ...selection, subject: name })} className="group w-full max-w-[380px] bg-white rounded-[2rem] p-8 md:p-12 flex flex-col items-center transition-all hover:-translate-y-4 shadow-sm border border-gray-100">
+              <div className={`w-20 h-20 md:w-28 md:h-28 ${SUBJECT_LIST[name].bgColor} ${SUBJECT_LIST[name].color} rounded-[1.5rem] flex items-center justify-center mb-6 group-hover:scale-110 transition-all`}>{SUBJECT_LIST[name].icon}</div>
+              <h4 className="text-xl md:text-2xl font-black text-[#1e293b] mb-2 text-center tracking-tight">{name}</h4>
+            </button>
+          ))}
+
+          {showGrade7IntegratedScienceNotes && (
+            <div className="col-span-full w-full max-w-5xl bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 md:p-12 text-left">
+              <div className="flex items-start justify-between gap-6 flex-col md:flex-row">
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Grade 7 • Integrated Science</div>
+                  <h3 className="mt-2 text-2xl md:text-4xl font-black text-slate-900 tracking-tight">CHAPTER 1: INTEGRATED SCIENCE</h3>
+                </div>
+                <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <Microscope className="w-5 h-5 text-slate-700" />
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-600">Integrated Science</div>
+                </div>
+              </div>
+
+              <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5 flex items-start gap-4">
+                <BookOpen className="w-5 h-5 text-[#249e91] mt-0.5" />
+                <div className="text-left">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500">Chapter 1 Notes</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-700">Tap a heading to open. Diagrams are placed next to the matching topic.</div>
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-3">
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden" open>
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Sparkles className="w-5 h-5 text-purple-600" />
+                      <div className="font-black text-slate-900">1. Meaning of Integrated Science</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 text-slate-700 font-semibold leading-relaxed">
+                    Integrated Science is the study of Biology, Chemistry, and Physics together as one subject. It helps learners understand living things, matter, energy, and the environment. It also teaches scientific skills used in daily life.
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Target className="w-5 h-5 text-emerald-700" />
+                      <div className="font-black text-slate-900">2. Knowledge and Skills Gained</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        'Observation skills',
+                        'Measuring skills',
+                        'Classification skills',
+                        'Communication skills',
+                        'Prediction skills',
+                        'Conclusion skills',
+                        'Handling apparatus and materials',
+                        'Recording and interpreting results'
+                      ].map((item) => (
+                        <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Lightbulb className="w-5 h-5 text-amber-600" />
+                      <div className="font-black text-slate-900">3. Importance of Integrated Science</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 space-y-3">
+                    {[
+                      'Helps learners understand nature and the environment',
+                      'Develops thinking and problem-solving skills',
+                      'Prepares learners for science, medical, and technical careers',
+                      'Helps in health, farming, transport, construction, and communication'
+                    ].map((item) => (
+                      <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                    ))}
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <FlaskConical className="w-5 h-5 text-[#249e91]" />
+                      <div className="font-black text-slate-900">4. The Laboratory</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 text-slate-700 font-semibold leading-relaxed">
+                    A laboratory is a special room used for experiments and investigations. It contains chemicals, apparatus, and instruments. Experiments must be done carefully and safely.
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <ShieldAlert className="w-5 h-5 text-red-600" />
+                      <div className="font-black text-slate-900">5. Laboratory Safety Rules</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 space-y-3">
+                    {[
+                      'Do not eat or drink in the lab',
+                      'Wear protective clothing (lab coat, gloves, goggles)',
+                      'Do not run or play in the lab',
+                      'Follow the teacher’s instructions',
+                      'Handle chemicals and apparatus carefully',
+                      'Report accidents immediately',
+                      'Wash hands after experiments',
+                      'Know where fire extinguishers and exits are'
+                    ].map((item) => (
+                      <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                    ))}
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <AlertCircle className="w-5 h-5 text-orange-600" />
+                      <div className="font-black text-slate-900">6. Hazards in the Laboratory</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6">
+                    <div className="text-slate-700 font-semibold">A hazard is anything that can cause harm.</div>
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        'Chemicals (acids, bases, poisons)',
+                        'Fire and heat',
+                        'Electricity',
+                        'Broken glass',
+                        'Sharp tools'
+                      ].map((item) => (
+                        <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <AlertCircle className="w-5 h-5 text-orange-600" />
+                      <div className="font-black text-slate-900">7. Hazard Symbols</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {[
+                        { title: 'Flammable', meaning: 'catches fire easily', icon: <Flame className="w-6 h-6 text-red-600" />, bg: 'bg-red-50', border: 'border-red-200' },
+                        { title: 'Corrosive', meaning: 'burns skin and metals', icon: <BeakerIcon className="w-6 h-6 text-indigo-700" />, bg: 'bg-indigo-50', border: 'border-indigo-200' },
+                        { title: 'Toxic/Poisonous', meaning: 'causes illness or death', icon: <Skull className="w-6 h-6 text-slate-900" />, bg: 'bg-slate-50', border: 'border-slate-200' },
+                        { title: 'Explosive', meaning: 'may explode', icon: <Activity className="w-6 h-6 text-orange-600" />, bg: 'bg-orange-50', border: 'border-orange-200' },
+                        { title: 'Radioactive', meaning: 'gives harmful radiation', icon: <Radiation className="w-6 h-6 text-purple-700" />, bg: 'bg-purple-50', border: 'border-purple-200' },
+                        { title: 'Harmful/Irritant', meaning: 'causes skin or eye irritation', icon: <AlertCircle className="w-6 h-6 text-amber-700" />, bg: 'bg-amber-50', border: 'border-amber-200' },
+                      ].map((h) => (
+                        <div key={h.title} className={`rounded-2xl border ${h.border} ${h.bg} p-4 flex items-center gap-3`}>
+                          {h.icon}
+                          <div>
+                            <div className="text-slate-900 font-black text-sm">{h.title}</div>
+                            <div className="text-slate-700 font-semibold text-xs">{h.meaning}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <ShieldAlert className="w-5 h-5 text-red-600" />
+                      <div className="font-black text-slate-900">8. Common Laboratory Accidents</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      'Cuts from broken glass',
+                      'Burns and scalds from fire or hot liquids',
+                      'Chemical splashes in eyes or on skin',
+                      'Electric shock',
+                      'Poisoning by swallowing or inhaling chemicals'
+                    ].map((item) => (
+                      <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                    ))}
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Stethoscope className="w-5 h-5 text-emerald-700" />
+                      <div className="font-black text-slate-900">9. First Aid and PIA Rule</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6">
+                    <div className="text-slate-700 font-semibold">First aid is the first help given before medical treatment.</div>
+                    <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700">PIA Rule</div>
+                      <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {[
+                          { title: 'Protect', desc: 'move the injured person to safety', icon: <ShieldCheck className="w-5 h-5 text-emerald-700" /> },
+                          { title: 'Inform', desc: 'report to the teacher or authority', icon: <Info className="w-5 h-5 text-emerald-700" /> },
+                          { title: 'Assist', desc: 'give simple first aid', icon: <Heart className="w-5 h-5 text-emerald-700" /> },
+                        ].map((p) => (
+                          <div key={p.title} className="rounded-2xl border border-emerald-200 bg-white p-4">
+                            <div className="flex items-center gap-3">
+                              {p.icon}
+                              <div className="text-slate-800 font-black">{p.title}</div>
+                            </div>
+                            <div className="mt-1 text-xs font-semibold text-slate-600">{p.desc}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        { title: 'Cuts', action: 'wash, disinfect, cover' },
+                        { title: 'Burns', action: 'cool with cold water' },
+                        { title: 'Chemical in eyes', action: 'wash with clean water' },
+                        { title: 'Electric shock', action: 'switch off power first' },
+                      ].map((x) => (
+                        <div key={x.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                          <div className="text-slate-900 font-black text-sm">{x.title}</div>
+                          <div className="text-slate-700 font-semibold text-sm">{x.action}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Eye className="w-5 h-5 text-slate-700" />
+                      <div className="font-black text-slate-900">10. Basic Science Process Skills</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      { title: 'Observation', desc: 'Using the five senses to gather information.' },
+                      { title: 'Measuring', desc: 'Finding size, mass, time, temperature, or volume using instruments.' },
+                      { title: 'Classification', desc: 'Grouping things by similarities and differences.' },
+                      { title: 'Communication', desc: 'Sharing results using words, tables, diagrams, and graphs.' },
+                      { title: 'Prediction', desc: 'Making a careful guess based on knowledge.' },
+                      { title: 'Conclusion', desc: 'Making a statement based on results and observations.' },
+                    ].map((x) => (
+                      <div key={x.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="text-slate-900 font-black text-sm">{x.title}</div>
+                        <div className="mt-1 text-slate-700 font-semibold text-sm">{x.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Ruler className="w-5 h-5 text-slate-700" />
+                      <div className="font-black text-slate-900">11. Measurement</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 text-slate-700 font-semibold leading-relaxed">
+                    Measurement is finding the size or amount of something using a unit.
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Globe className="w-5 h-5 text-slate-700" />
+                      <div className="font-black text-slate-900">12. SI Units (International System of Units)</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        { q: 'Length', u: 'metre (m)' },
+                        { q: 'Mass', u: 'kilogram (kg)' },
+                        { q: 'Time', u: 'second (s)' },
+                        { q: 'Temperature', u: 'kelvin (K)' },
+                        { q: 'Electric current', u: 'ampere (A)' },
+                      ].map((x) => (
+                        <div key={x.q} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center justify-between">
+                          <div className="text-slate-900 font-black">{x.q}</div>
+                          <div className="text-slate-700 font-semibold">{x.u}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Box className="w-5 h-5 text-slate-700" />
+                      <div className="font-black text-slate-900">13. Derived Quantities (Area, Volume, Density)</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div className="flex items-center gap-2">
+                          <Square className="w-5 h-5 text-indigo-700" />
+                          <div className="text-slate-900 font-black">Area</div>
+                        </div>
+                        <div className="mt-2 text-slate-700 font-semibold">Area = length × width (m²)</div>
+                        <svg viewBox="0 0 220 120" className="mt-4 w-full h-auto">
+                          <rect x="50" y="25" width="120" height="70" fill="#EEF2FF" stroke="#4338CA" strokeWidth="3" rx="10" />
+                          <text x="110" y="65" textAnchor="middle" fontSize="14" fontWeight="800" fill="#111827">Rectangle</text>
+                          <text x="110" y="18" textAnchor="middle" fontSize="12" fontWeight="800" fill="#334155">length</text>
+                          <line x1="50" y1="20" x2="170" y2="20" stroke="#334155" strokeWidth="2" />
+                          <text x="18" y="62" textAnchor="start" fontSize="12" fontWeight="800" fill="#334155">width</text>
+                          <line x1="42" y1="25" x2="42" y2="95" stroke="#334155" strokeWidth="2" />
+                        </svg>
+                      </div>
+
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div className="flex items-center gap-2">
+                          <Box className="w-5 h-5 text-emerald-700" />
+                          <div className="text-slate-900 font-black">Volume</div>
+                        </div>
+                        <div className="mt-2 text-slate-700 font-semibold">Volume = length × width × height (m³)</div>
+                        <svg viewBox="0 0 220 140" className="mt-4 w-full h-auto">
+                          <polygon points="70,45 140,25 190,55 120,75" fill="#D1FAE5" stroke="#047857" strokeWidth="3" />
+                          <polygon points="70,45 120,75 120,120 70,90" fill="#A7F3D0" stroke="#047857" strokeWidth="3" />
+                          <polygon points="120,75 190,55 190,100 120,120" fill="#6EE7B7" stroke="#047857" strokeWidth="3" />
+                          <text x="130" y="135" textAnchor="middle" fontSize="12" fontWeight="800" fill="#065F46">Box / cube</text>
+                        </svg>
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                      <div className="flex items-center gap-2">
+                        <Triangle className="w-5 h-5 text-amber-700" />
+                        <div className="text-slate-900 font-black">Density</div>
+                      </div>
+                      <div className="mt-2 text-slate-700 font-semibold">Density = mass ÷ volume (kg/m³)</div>
+                      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                          <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Simple diagram</div>
+                          <svg viewBox="0 0 240 120" className="mt-2 w-full h-auto">
+                            <rect x="18" y="24" width="204" height="72" rx="18" fill="#FEF3C7" stroke="#B45309" strokeWidth="3" />
+                            <text x="120" y="62" textAnchor="middle" fontSize="16" fontWeight="900" fill="#111827">density = mass ÷ volume</text>
+                          </svg>
+                        </div>
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                          <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Example</div>
+                          <div className="mt-2 text-slate-700 font-semibold">If mass = 2 kg and volume = 1 m³, density = 2 kg/m³.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Ruler className="w-5 h-5 text-slate-700" />
+                      <div className="font-black text-slate-900">14. Measuring Instruments</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center gap-3"><Ruler className="w-6 h-6 text-slate-700" /><div><div className="font-black text-slate-900 text-sm">Length</div><div className="font-semibold text-slate-700 text-xs">Ruler, metre rule, tape measure</div></div></div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center gap-3"><Weight className="w-6 h-6 text-slate-700" /><div><div className="font-black text-slate-900 text-sm">Mass</div><div className="font-semibold text-slate-700 text-xs">Beam balance, electronic balance</div></div></div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center gap-3"><Timer className="w-6 h-6 text-slate-700" /><div><div className="font-black text-slate-900 text-sm">Time</div><div className="font-semibold text-slate-700 text-xs">Clock, stopwatch</div></div></div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center gap-3"><Thermometer className="w-6 h-6 text-slate-700" /><div><div className="font-black text-slate-900 text-sm">Temperature</div><div className="font-semibold text-slate-700 text-xs">Thermometer</div></div></div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center gap-3"><TestTube className="w-6 h-6 text-slate-700" /><div><div className="font-black text-slate-900 text-sm">Volume</div><div className="font-semibold text-slate-700 text-xs">Measuring cylinder, burette, pipette, beaker</div></div></div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-center gap-3"><Wind className="w-6 h-6 text-slate-700" /><div><div className="font-black text-slate-900 text-sm">Weight</div><div className="font-semibold text-slate-700 text-xs">Spring balance</div></div></div>
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Flame className="w-5 h-5 text-red-600" />
+                      <div className="font-black text-slate-900">15. Heating Apparatus</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      'Bunsen burner',
+                      'Spirit lamp',
+                      'Candle',
+                      'Electric hot plate'
+                    ].map((item) => (
+                      <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                    ))}
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Flame className="w-5 h-5 text-orange-600" />
+                      <div className="font-black text-slate-900">16. The Bunsen Burner</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 space-y-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div className="text-slate-900 font-black">Main parts</div>
+                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {[
+                            'Base – supports the burner',
+                            'Gas inlet – allows gas in',
+                            'Air hole – allows air in',
+                            'Collar – controls air',
+                            'Barrel (chimney) – where flame rises'
+                          ].map((item) => (
+                            <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-700 font-semibold text-sm">{item}</div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Labeled diagram</div>
+                        <svg viewBox="0 0 260 260" className="mt-3 w-full h-auto">
+                          <rect x="80" y="170" width="100" height="45" rx="16" fill="#DBEAFE" stroke="#2563EB" strokeWidth="3" />
+                          <rect x="112" y="55" width="36" height="120" rx="14" fill="#E5E7EB" stroke="#64748B" strokeWidth="3" />
+                          <rect x="98" y="125" width="64" height="36" rx="18" fill="#F1F5F9" stroke="#64748B" strokeWidth="3" />
+                          <rect x="52" y="182" width="46" height="18" rx="9" fill="#93C5FD" stroke="#2563EB" strokeWidth="3" />
+                          <text x="130" y="42" textAnchor="middle" fontSize="12" fontWeight="900" fill="#0F172A">Barrel</text>
+                          <line x1="130" y1="46" x2="130" y2="55" stroke="#0F172A" strokeWidth="2" />
+                          <text x="208" y="142" fontSize="12" fontWeight="900" fill="#0F172A">Collar</text>
+                          <line x1="190" y1="138" x2="162" y2="142" stroke="#0F172A" strokeWidth="2" />
+                          <text x="16" y="142" fontSize="12" fontWeight="900" fill="#0F172A">Air hole</text>
+                          <line x1="70" y1="142" x2="98" y2="142" stroke="#0F172A" strokeWidth="2" />
+                          <text x="10" y="212" fontSize="12" fontWeight="900" fill="#0F172A">Gas inlet</text>
+                          <line x1="78" y1="206" x2="98" y2="192" stroke="#0F172A" strokeWidth="2" />
+                          <text x="130" y="240" textAnchor="middle" fontSize="12" fontWeight="900" fill="#0F172A">Base</text>
+                          <line x1="130" y1="226" x2="130" y2="215" stroke="#0F172A" strokeWidth="2" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Microscope className="w-5 h-5 text-slate-800" />
+                      <div className="font-black text-slate-900">17. Magnification (Hand lens & Microscope)</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 space-y-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div className="font-black text-slate-900">a) Hand Lens</div>
+                        <div className="mt-2 text-slate-700 font-semibold">Used to enlarge small objects. Magnification: ×5 to ×10.</div>
+                        <svg viewBox="0 0 240 160" className="mt-4 w-full h-auto">
+                          <circle cx="95" cy="70" r="45" fill="#E0F2FE" stroke="#0284C7" strokeWidth="5" />
+                          <rect x="120" y="95" width="85" height="16" rx="8" transform="rotate(35 120 95)" fill="#334155" />
+                          <text x="95" y="22" textAnchor="middle" fontSize="12" fontWeight="900" fill="#0F172A">Lens</text>
+                          <line x1="95" y1="26" x2="95" y2="38" stroke="#0F172A" strokeWidth="2" />
+                          <text x="178" y="150" textAnchor="middle" fontSize="12" fontWeight="900" fill="#0F172A">Handle</text>
+                        </svg>
+                      </div>
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div className="font-black text-slate-900">b) Microscope</div>
+                        <div className="mt-2 text-slate-700 font-semibold">Used to see very small objects like cells.</div>
+                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {[
+                            'Eyepiece',
+                            'Objective lens',
+                            'Stage',
+                            'Coarse & fine adjustment knobs',
+                            'Mirror / light source',
+                            'Base & arm'
+                          ].map((p) => (
+                            <div key={p} className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-700 font-semibold text-sm">{p}</div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <Hand className="w-5 h-5 text-slate-700" />
+                      <div className="font-black text-slate-900">18. Handling Apparatus</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      'Handle glass carefully',
+                      'Do not heat cracked glassware',
+                      'Use tongs for hot objects',
+                      'Return apparatus to proper place',
+                      'Keep chemicals well labeled'
+                    ].map((item) => (
+                      <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                    ))}
+                  </div>
+                </details>
+
+                <details className="group rounded-2xl border border-slate-200 bg-white overflow-hidden">
+                  <summary className="cursor-pointer list-none p-5 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <BookOpen className="w-5 h-5 text-slate-700" />
+                      <div className="font-black text-slate-900">19. Packaging Labels</div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 transition-transform group-open:rotate-90" />
+                  </summary>
+                  <div className="px-5 pb-6 space-y-4">
+                    <div className="text-slate-700 font-semibold">A packaging label gives important information about a product. It shows:</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        'Name of product',
+                        'Ingredients',
+                        'Quantity',
+                        'Manufacturing and expiry dates',
+                        'Storage instructions'
+                      ].map((item) => (
+                        <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-700 font-semibold">{item}</div>
+                      ))}
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                      <div className="text-slate-900 font-black">Importance</div>
+                      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {[
+                          'Helps consumers choose correctly',
+                          'Helps avoid dangerous or expired products'
+                        ].map((item) => (
+                          <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-700 font-semibold">{item}</div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Example label</div>
+                      <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <div className="text-slate-900 font-black">Super Soap</div>
+                        <div className="mt-1 text-slate-700 font-semibold text-sm">Ingredients: water, fragrance</div>
+                        <div className="mt-1 text-slate-700 font-semibold text-sm">Quantity: 250 ml</div>
+                        <div className="mt-1 text-slate-700 font-semibold text-sm">MFD: 01/2026 • EXP: 01/2028</div>
+                        <div className="mt-1 text-slate-700 font-semibold text-sm">Store in a cool, dry place.</div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+          )}
+
+          {step === 'notes' && !showGrade7IntegratedScienceNotes && (
+            <div className="col-span-full w-full max-w-4xl bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 md:p-12 text-left">
+              <div className="flex items-center gap-3">
+                <BookOpen className="w-6 h-6 text-[#249e91]" />
+                <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Notes coming soon</h3>
+              </div>
+              <p className="mt-3 text-slate-600 font-semibold">Select Grade 7 → Integrated Science to view the first notes.</p>
+              <button onClick={() => setSelection({ ...selection, subject: null })} className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-2xl border-2 border-slate-200 bg-slate-50 text-slate-700 font-black uppercase text-xs hover:border-slate-400">
+                <ChevronLeft className="w-4 h-4" /> Choose another subject
+              </button>
+            </div>
+          )}
+        </div>
+
+        {step !== 'level' && (
+          <button onClick={() => { if (step === 'grade') setSelection({ ...selection, section: null }); if (step === 'subject') setSelection({ ...selection, grade: null }); if (step === 'notes') setSelection({ ...selection, subject: null }); }} className="mt-12 text-slate-400 font-bold flex items-center gap-2 mx-auto">
+            <ChevronLeft className="w-5 h-5" /> Back
+          </button>
+        )}
+
+        <button onClick={() => setView('selection')} className="mt-4 text-slate-400 font-bold flex items-center gap-2 mx-auto">
+          <FlaskConical className="w-5 h-5" /> Go to Virtual Labs
+        </button>
       </div>
     </section>
   );
@@ -1958,6 +2622,7 @@ const ViewportManager = () => {
       <main>
         {view === 'landing' && <Landing onStartLearning={() => setView('onboarding')} />}
         {view === 'selection' && <Selection onExperimentSelect={setActiveExp} />}
+        {view === 'curriculum' && <Curriculum />}
         {view === 'about' && <AboutSection />}
         {view === 'lab' && activeExp && (
           <LabBench 
